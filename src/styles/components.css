@@ -22,7 +22,9 @@
   transform: rotate(-14deg); opacity: 0.65;
 }
 .decor--footer {
-  bottom: 0; left: 50%; transform: translateX(-50%);
+  /* lifted clear of the studio credit line, so the palace closes the
+     "Thank You / names" block rather than sitting behind the fine print */
+  bottom: var(--footer-credit-space); left: 50%; transform: translateX(-50%);
   width: min(400px, 76vw); opacity: 0.5;
 }
 /* in-flow flourish that closes the countdown, leading into the films */
@@ -290,6 +292,8 @@ textarea.field__input { resize: vertical; line-height: 1.5; }
 
 /* ---- Footer --------------------------------------------------------------- */
 .footer {
+  /* room reserved below the palace for the studio credit */
+  --footer-credit-space: 128px;
   text-align: center; color: var(--text-dark);
   padding-bottom: max(var(--sp-8), env(safe-area-inset-bottom));
 }
@@ -301,6 +305,19 @@ textarea.field__input { resize: vertical; line-height: 1.5; }
 .footer__contacts a { font-family: var(--font-sans); font-size: 0.9rem; color: var(--sage-deep); text-decoration: none; }
 .footer__share { margin: 0 auto; }
 .footer__hashtag { font-family: var(--font-script); font-size: 1.8rem; color: var(--gold); margin-top: var(--sp-5); }
+.footer__credit {
+  font-family: var(--font-sans); font-size: 0.78rem; letter-spacing: 0.02em;
+  color: var(--text-light); margin: var(--sp-8) 0 0;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px;
+}
+.footer__heart { color: var(--gold); }
+.footer__credit-sep { color: var(--border); }
+.footer__credit-cta {
+  color: var(--gold-deep); text-decoration: none;
+  border-bottom: 1px solid var(--gold-border); padding-bottom: 1px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.footer__credit-cta:hover, .footer__credit-cta:focus-visible { color: var(--gold-strong); border-color: var(--gold); }
 
 /* ---- Music toggle --------------------------------------------------------- */
 .music-toggle {

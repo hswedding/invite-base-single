@@ -226,3 +226,14 @@ export const config = {
   // Leave '' to auto-detect from the browser. ⟵ EDIT once deployed.
   siteUrl: '',
 };
+
+/* Studio credit — the "Made with ♥ by … | Create Yours →" line in the footer.
+   The CTA opens a WhatsApp chat with the studio so enquiries arrive instantly. */
+export const studio = {
+  name: 'HS Wedding Solutions',
+  cta: 'Create Yours →',
+  // Studio WhatsApp number (digits + country code, no + or spaces). ⟵ EDIT
+  whatsapp: '916280777697',
+  // Pre-filled first message the enquirer sends. ⟵ EDIT
+  enquiry: "Hi HS Wedding Solutions! I saw one of your digital wedding invitations and I'd love one for my wedding.",
+};

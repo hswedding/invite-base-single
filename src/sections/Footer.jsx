@@ -1,4 +1,4 @@
-import { couple, families } from '../data.js';
+import { couple, families, studio } from '../data.js';
 import { orderedCouple } from '../lib/config.js';
 import Icon from '../components/Icons.jsx';
 import palace from '../Images/decor/palace.png';
@@ -7,6 +7,7 @@ import palace from '../Images/decor/palace.png';
 export default function Footer({ invite }) {
   const family = families[invite.side] || families.joint;
   const names = orderedCouple(invite.side).map((c) => c.first).join(' & ');
+  const studioWhatsApp = `https://wa.me/${studio.whatsapp}?text=${encodeURIComponent(studio.enquiry)}`;
 
   return (
     <footer className="footer section" id="footer-section">
@@ -28,6 +29,19 @@ export default function Footer({ invite }) {
         </ul>
 
         <p className="footer__hashtag">{couple.hashtag}</p>
+
+        <p className="footer__credit">
+          Made with <span className="footer__heart" aria-hidden="true">♥</span><span className="sr-only">love</span> by {studio.name}
+          <span className="footer__credit-sep" aria-hidden="true">|</span>
+          <a
+            className="footer__credit-cta"
+            href={studioWhatsApp}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {studio.cta}
+          </a>
+        </p>
       </div>
     </footer>
   );
