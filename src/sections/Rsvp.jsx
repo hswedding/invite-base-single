@@ -2,14 +2,15 @@ import { useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
 import PhoneInput from 'react-phone-number-input';
 import { gsap, useGSAP } from '../lib/gsap.js';
-import { config } from '../data.js';
+import { config, families } from '../data.js';
 import { buildRsvpWhatsApp } from '../lib/config.js';
 import Icon from '../components/Icons.jsx';
 
 /* Scene 6 — RSVP. Validates client-side, fires confetti + a sound, then opens a
    pre-filled WhatsApp message to the hosts (no backend). */
-export default function Rsvp() {
+export default function Rsvp({ invite }) {
   const root = useRef(null);
+  const rsvpNumber = families[invite.side]?.rsvpWhatsApp || config.rsvpWhatsApp;
   const [form, setForm] = useState({
     name: '', phone: '', party: 1, arrival: '',
   });
@@ -48,7 +49,7 @@ export default function Rsvp() {
     ev.preventDefault();
     if (!validate()) return;
     setStatus('sending');
-    const url = buildRsvpWhatsApp(config.rsvpWhatsApp, form);
+    const url = buildRsvpWhatsApp(rsvpNumber, form);
     setTimeout(() => {
       setStatus('success');
       celebrate();
@@ -71,7 +72,7 @@ export default function Rsvp() {
             <span className="rsvp__check"><Icon name="check" size={40} /></span>
             <h3 className="serif-h">Thank you, {form.name.split(' ')[0]}!</h3>
             <p>If WhatsApp didn’t open, tap below to send your RSVP.</p>
-            <a className="btn btn--primary" href={buildRsvpWhatsApp(config.rsvpWhatsApp, form)}
+            <a className="btn btn--primary" href={buildRsvpWhatsApp(rsvpNumber, form)}
               target="_blank" rel="noopener noreferrer">
               <Icon name="whatsapp" size={18} /> Send on WhatsApp
             </a>

@@ -71,7 +71,7 @@ export default function App() {
         {invite.sections.countdown && <Countdown />}
         <EventFilms events={events} side={invite.side} soundOn={soundOn} />
         {invite.sections.venue && <Venue events={events} />}
-        {invite.sections.rsvp && <Rsvp />}
+        {invite.sections.rsvp && <Rsvp invite={invite} />}
         <Footer invite={invite} />
       </main>
 

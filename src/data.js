@@ -32,6 +32,8 @@ export const families = {
       bride: 'D/o Mrs. Ashu & Mr. Manish Malhotra',
     },
     sign: 'With love, the Malhotra Family',                         // ⟵ EDIT
+    // Overrides config.rsvpWhatsApp for side=bride links. ⟵ EDIT
+    rsvpWhatsApp: '919815551592',
     contacts: [
       { name: 'Manish Malhotra', phone: '+919876500001' },          // ⟵ EDIT
       { name: 'Ashu Malhotra', phone: '+919876500002' },          // ⟵ EDIT
