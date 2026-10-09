@@ -16,6 +16,10 @@ npm run deploy     # build + wrangler deploy
 
 There is no test runner, linter, or type checker configured — `dev`, `build`, and `preview` are the only scripts. Verify changes by running the dev server and viewing the page.
 
+## Setting up a couple's repo
+
+When asked to build an invitation for a new couple (often in an empty `hswedding/invite-<slug>` repo), follow **`docs/NEW-COUPLE-GUIDE.md`** step by step: it covers creating the repo from this base with full history, every `src/data.js` field and what actually renders, media rules (H.264 MP4 ≤ 25 MiB), design, local checks, the Cloudflare deploy and the hand-over. The couple's answers arrive in the format of **`docs/CLIENT-INTAKE.md`**, which maps each answer to its `data.js` field.
+
 ## What this is
 
 This is **invite-base**: the base every couple's invitation repo is cloned from (see README "Starting a new couple"). Couple repos keep this repo as the `upstream` remote and pull fixes with `git merge upstream/main`, so keep base changes generic and couple-specific work in `src/data.js`, `src/styles/tokens.css`, `public/` and `src/custom/`.

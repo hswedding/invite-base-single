@@ -1,0 +1,306 @@
+# New couple runbook
+
+How to turn this base into one couple's invitation, start to finish. Written so
+that a fresh Claude Code session (or Sandeep) can follow it without any other
+context. Read `CLAUDE.md` first for the architecture; this file is the
+procedure.
+
+**Inputs you need before starting**
+
+1. The couple's answers to the intake message (`docs/CLIENT-INTAKE.md`).
+2. The event films (Sandeep makes these), plus the envelope opening film.
+3. Optional: background music, a 1200×630 preview image, decor art.
+
+---
+
+## 1. Create the couple's repo
+
+Naming: repo `hswedding/invite-<slug>`, Worker `invite-<slug>`, where `<slug>`
+is lowercase letters, digits and hyphens (for example `aarav-diya`).
+
+### A. With the GitHub CLI logged in
+
+```bash
+./scripts/new-couple.sh <slug>
+```
+
+### B. Sandeep created an empty repo on GitHub (the usual case for a Claude session)
+
+The couple repo must carry the base's **full history**, otherwise
+`git merge upstream/main` can never pull base fixes. Never use GitHub's
+"Use this template" button for the same reason.
+
+```bash
+# Claude cloud sessions clone shallow: deepen first, or the push is rejected.
+git clone https://github.com/hswedding/invite-base invite-<slug>
+cd invite-<slug>
+git fetch --depth=1000 origin main      # no-op on a full clone
+git remote rename origin upstream
+git remote add origin https://github.com/hswedding/invite-<slug>
+```
+
+Then rename the Worker and package (the Worker name becomes the site URL and
+must match the Cloudflare dashboard):
+
+- `wrangler.jsonc` → `"name": "invite-<slug>"`
+- `package.json` → `"name": "invite-<slug>"`
+
+```bash
+git commit -am "Start invite-<slug> from invite-base"
+git push -u origin main
+```
+
+Work on a branch (`sandeep/<slug>-content`) from here if the couple should
+review a preview before it goes live (see step 6).
+
+---
+
+## 2. Fill in `src/data.js`
+
+Everything the guest reads comes from this one file. Replace the example
+couple completely: search for every `⟵ EDIT` marker and for the old names.
+
+### `couple`
+
+| Field | Example | Used for |
+| --- | --- | --- |
+| `groom.first`, `bride.first` | `'Aarav'`, `'Diya'` | Hero names, footer, share message |
+| `groom.full`, `bride.full` | `'Aarav Mehta'` | Not displayed today; keep filled |
+| `monogram` | `'A&D'` | Not displayed today |
+| `hashtag` | `'#AaravWedsDiya'` | Footer. `''` leaves that line empty |
+
+Name order follows the side: bride links show the bride first, groom and joint
+links show the groom first (`orderedCouple` in `lib/config.js`).
+
+### `wedding`
+
+| Field | Example | Notes |
+| --- | --- | --- |
+| `dateTimeISO` | `'2027-02-14T19:30:00'` | Main ceremony, local time, no timezone. Drives the countdown |
+| `dateLabel` | `'14 February 2027'` | Shown under the scratch card and countdown |
+| `dayLabel` | `'Sunday'` | Check it matches the date |
+| `scratchPrompt` | `'Scratch to reveal our wedding date'` | Text on the scratch card |
+
+### `families` — one block per hosting side: `bride`, `groom`, `joint`
+
+The `side` in a guest's link picks the block, so each side's guests read their
+own family's voice.
+
+| Field | Example | Notes |
+| --- | --- | --- |
+| `ganesha` | `['॥ श्री गणेशाय नमः ॥']` | Optional array of invocation lines (Sanskrit/Hindi). Omit for none |
+| `invocation` | `'ੴ ਸਤਿ ਨਾਮੁ'` | Optional single line (any script). Omit for none |
+| `hosts` | `'Mrs. & Mr. Rajesh Mehta'` | Who is inviting. Shown in capitals |
+| `inviteLine` | `'joyfully invite you to celebrate the wedding of'` | Sentence after the hosts |
+| `parents.groom`, `parents.bride` | `'S/o Mrs. Neha & Mr. Rajesh Mehta'` | Line under each name. Omit a key to hide it |
+| `sign` | `'With love, the Mehta Family'` | Footer sign-off |
+| `rsvpWhatsApp` | `'919800000000'` | Optional. RSVPs from this side's links go here; otherwise `config.rsvpWhatsApp` |
+| `contacts` | `[{ name: 'Rajesh Mehta', phone: '+919800000000' }]` | Footer tap-to-call list. Phones with `+` and country code |
+
+The Ganesha image above the invocation is controlled separately by
+`config.showGanesha`.
+
+### Venues (plain `const`s above `events`)
+
+Define each venue once and reuse it across events:
+
+```js
+const banquet = {
+  name: 'The Grand Lawns',
+  area: 'Sector 5, Panchkula, Haryana',
+  mapUrl: 'https://maps.app.goo.gl/…',   // the couple's Google Maps share link
+};
+```
+
+The Venue section lists each unique venue of the guest's selected functions
+with a "Get directions" button, and embeds a map of the **last** one (the
+latest function, usually the wedding).
+
+### `events` — the functions
+
+```js
+{
+  id: 'haldi', order: 3, side: 'together',
+  name: 'Haldi', nameDeva: 'हल्दी',
+  dateISO: '2027-02-13', dateLabel: '13 Feb', dayLabel: 'Saturday',
+  timeLabel: '10 a.m. onwards', icon: 'haldi',
+  blurb: 'Turmeric, sunshine and joy.',
+  dressCode: { label: 'Sunny yellow', color: '#f1c40f' },
+  venue: banquet,
+  video: '/videos/Haldi.mp4',
+},
+```
+
+| Field | Notes |
+| --- | --- |
+| `id` | Lowercase kebab-case, unique. It is the vocabulary of guest links (`fns=`) and presets. **Never rename or remove an id after links have been sent**: those guests silently lose that function |
+| `order` | Chronological sort. Guest links always show functions in this order |
+| `side` | `'bride'`, `'groom'` or `'together'`. Drives the bride/groom presets and each side's default functions |
+| `name` | Title on the film card and in the venue list |
+| `dateLabel`, `dayLabel` | Shown above the film (`13 Feb · Saturday`) |
+| `video` | One film in `public/videos/` (URL-encode spaces as they appear in the path, e.g. `/videos/HS Haldi.mp4` works as written) |
+| `videoBySide` | Instead of `video`: `{ bride: '…', groom: '…' }`. Bride/groom links get their side's film; joint links show both, groom first |
+| `nameDeva`, `dateISO`, `timeLabel`, `icon`, `blurb` | **Not rendered by the current UI.** Keep them filled (they document the function and a custom section may use them). `icon` must be a key in `components/Icons.jsx`: `kirtan mehndi path sangeet haldi chooda baarat wedding heart lotus sparkle` |
+| `dressCode.color` | Only shown as the colour dot in the `?host` panel. The label isn't rendered |
+
+**Important:** a function **without a film doesn't get its own card** on the
+page; it only appears by name in the venue list. Its time, dress code and
+details reach guests through its film. If a couple wants a function without a
+film shown properly, build a small card section in `src/custom/` that renders
+`name`, `dateLabel`, `timeLabel`, `dressCode` and `blurb` for film-less events.
+
+### `presets`
+
+Named function sets for the `?host` panel and `preset=` links. The defaults
+(`all`, `bride`, `groom`, plus a couple of examples) derive from `events`;
+replace `wedding` / `shagun-wedding` with sets that make sense for this couple
+(their ids must exist). `bride` and `groom` are also each side's default
+functions, so keep those two.
+
+### `toggleableSections`
+
+Leave as is unless a section is removed. Only `countdown`, `venue` and `rsvp`
+can be hidden per link.
+
+### `config`
+
+| Field | Notes |
+| --- | --- |
+| `rsvpWhatsApp` | Default RSVP number (digits with country code, no `+` or spaces). Used for joint links and any side without its own |
+| `yaySfx` | Optional RSVP success sound at `public/assets/yay.mp3`; missing file is fine |
+| `bgMusic` | Looping music path in `public/`. Encode spaces as `%20` here |
+| `siteUrl` | Leave `''` (auto-detected). Set it only if a custom domain should be used in share links built on another domain |
+| `envelopeVideo` | Opening film path, default `/videos/envelop.mp4` |
+| `showGanesha` | `false` hides the Ganesha image at the top of the hero |
+
+### `site` — page meta (what WhatsApp shows when a link is shared)
+
+| Field | Notes |
+| --- | --- |
+| `title` | Browser tab, e.g. `'Aarav & Diya · Wedding Invitation'` |
+| `description` | Search/preview description |
+| `shareTitle`, `shareDescription` | WhatsApp/social preview title and text |
+| `shareImage` | `/og-image.jpg`, a 1200×630 JPG in `public/`. **Add it**: without it the preview has no image |
+| `themeColor` | Mobile browser bar colour; match the page background |
+| `noindex` | Keep `true` (home addresses and phone numbers are on the page) |
+| `cloudflareAnalyticsToken` | Optional Web Analytics token; `''` = none |
+
+Restart `npm run dev` after editing `site`; it's read once at startup.
+
+### `studio`
+
+Sandeep's footer credit ("Made with ♥ by … | Create Yours →"). Leave unless
+told otherwise.
+
+---
+
+## 3. Media in `public/`
+
+| File | Rules |
+| --- | --- |
+| `videos/*.mp4` | **H.264 MP4** (Safari can't play other codecs), ≤ **25 MiB** each (Cloudflare's per-file limit). Today's films are 1–13 MB |
+| `videos/envelop.mp4` | Opening film; plays with sound on tap, then reveals the page |
+| music `.mp3` | Looping background score; check the couple is OK using it |
+| `og-image.jpg` | 1200×630 preview image |
+| `favicon.png` | Optional; replace with the couple's monogram if wanted |
+
+Films and music are served through `worker/index.js`, which adds the Range /
+206 support Safari needs. It only covers `/videos/*`, `*.mp4` and `*.mp3`
+(`run_worker_first` in `wrangler.jsonc`). If you add another media format or
+folder, extend that list and the extension regex in the `mediaSizes` plugin in
+`vite.config.js`.
+
+---
+
+## 4. Design
+
+All of this is per couple and free to change:
+
+- **Palette:** `src/styles/tokens.css` (CSS variables: cream paper, gold
+  family, rani/blush accents, leaf greens, envelope maroon). Match the couple's
+  printed card or chosen colours; keep text contrast (labels ≥ 4.5:1).
+- **Fonts:** Google Fonts link in `index.html`, font stacks in `tokens.css`,
+  optional self-hosted font in `src/styles/fonts.css`. Check licences for any
+  paid font.
+- **Decor art:** `src/Images/` (florals, palace, feather, divider, wash,
+  Ganesha). Easiest is to replace files keeping the same names; otherwise edit
+  the imports in `Hero.jsx`, `Countdown.jsx`, `Footer.jsx`.
+- **One-off sections or animations:** add components in `src/custom/` and
+  list them in `src/custom/index.js` (`[{ id, Component }]`). They render after
+  RSVP and before the footer, and receive the `invite` prop. Import GSAP from
+  `src/lib/gsap.js`, scroll through `window.__lenis`, and honour
+  `useReducedMotion`.
+- Editing base files is allowed when the design needs it, but every such edit
+  is a place where a later `git merge upstream/main` can conflict.
+
+---
+
+## 5. Verify locally
+
+```bash
+npm install
+npm run dev                        # http://localhost:5173
+```
+
+Open and check each of:
+
+- `/` (joint), `/?side=bride`, `/?side=groom`: hosts, invocation, name order, parents lines, films per side
+- `/?host`: the panel lists every function; presets select the right ones; a generated `/<slug>` link opens the same view
+- RSVP opens WhatsApp to the right number for each side
+- Footer contacts, hashtag and sign-off per side
+- Countdown targets the right date
+
+Then the production build on Cloudflare's runtime:
+
+```bash
+npm run cf:dev                     # http://localhost:8787
+curl -sI -H "Range: bytes=0-1" "http://localhost:8787/videos/envelop.mp4"   # expect 206 + Content-Range
+```
+
+---
+
+## 6. Deploy on Cloudflare (once per couple)
+
+1. Cloudflare dashboard → **Workers & Pages → Create → Import a repository** →
+   `hswedding/invite-<slug>`.
+2. Keep the detected settings: build `npm run build`, deploy
+   `npx wrangler deploy`. The project name must equal `name` in
+   `wrangler.jsonc`.
+3. Live at `https://invite-<slug>.hs-amazonsellers.workers.dev`. Add the
+   couple's own domain under the Worker's Domains & Routes if they have one.
+4. With preview builds on, each pushed branch gets a stable preview URL: send
+   it to the couple for review, then merge to `main` to go live.
+
+After deploy, check on a real phone (ideally an iPhone too): envelope film
+plays, films play, a `/<slug>` guest link opens, and the WhatsApp preview shows
+title, text and image.
+
+---
+
+## 7. Hand over to the families
+
+Send each side its host link:
+
+- Bride side: `https://<site>/?side=bride&host`
+- Groom side: `https://<site>/?side=groom&host`
+- Joint: `https://<site>/?host`
+
+In the panel they pick a guest's functions (or a preset), optionally type the
+guest's name, and copy the link or tap "Share on WhatsApp". Remind them the
+panel is hidden, not secured.
+
+---
+
+## 8. Later
+
+- **Pull a base fix** into a live couple: `git fetch upstream && git merge upstream/main`, then check the site.
+- **After the agreed period:** replace the content with a thank-you page or delete the Worker in Cloudflare, archive the GitHub repo, and delete the couple's personal data.
+
+## Gotchas
+
+- Changing or removing an event `id` breaks links already sent.
+- `dayLabel` and `dateLabel` are typed by hand: check they match the dates.
+- `bgMusic` needs `%20` for spaces; event `video` paths can be written with spaces.
+- Every film must be H.264 MP4 under 25 MiB, or it won't deploy or won't play on iPhone.
+- `worker/media-sizes.json` is generated by `npm run build`; run a build before `wrangler dev` or `wrangler deploy`.
+- The Cloudflare Worker name and `wrangler.jsonc` `name` must match, or the Cloudflare build fails.

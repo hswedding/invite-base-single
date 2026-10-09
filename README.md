@@ -20,6 +20,8 @@ npm run deploy     # build + deploy with Wrangler (needs `npx wrangler login` on
 
 ## Starting a new couple
 
+Full procedure: **[docs/NEW-COUPLE-GUIDE.md](docs/NEW-COUPLE-GUIDE.md)**. The message to send a couple for their details, with where each answer goes: **[docs/CLIENT-INTAKE.md](docs/CLIENT-INTAKE.md)**.
+
 Each couple gets their **own repo**, a full clone of this one, so their site
 can be customised freely while still being able to pull fixes from the base.
 
@@ -112,7 +114,7 @@ full joint invitation.
 | `preset` | a named set | `?preset=shagun-wedding` |
 | `fns` | exact functions (ids from `data.js`) | `?fns=haldi,wedding` |
 | `to` | personalised greeting | `?to=Sharma%20Family` |
-| `countdown` `story` `venue` `rsvp` `music` | set to `0` to hide | `?rsvp=0` |
+| `countdown` `venue` `rsvp` | set to `0` to hide | `?rsvp=0` |
 
 A bare URL with no params = the full joint invitation, everything on.
 Presets: `all`, `wedding`, `shagun-wedding`, `bride`, `groom`.
