@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
 import PhoneInput from 'react-phone-number-input';
 import { gsap, useGSAP } from '../lib/gsap.js';
-import { config, families } from '../data.js';
+import { config, host } from '../data.js';
 import { buildRsvpWhatsApp } from '../lib/config.js';
 import Icon from '../components/Icons.jsx';
 
@@ -10,7 +10,7 @@ import Icon from '../components/Icons.jsx';
    pre-filled WhatsApp message to the hosts (no backend). */
 export default function Rsvp({ invite }) {
   const root = useRef(null);
-  const rsvpNumber = families[invite.side]?.rsvpWhatsApp || config.rsvpWhatsApp;
+  const rsvpNumber = host.rsvpWhatsApp || config.rsvpWhatsApp;
   const [form, setForm] = useState({
     name: '', phone: '', party: 1, arrival: '',
   });

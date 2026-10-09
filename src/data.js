@@ -21,52 +21,29 @@ export const wedding = {
   scratchPrompt: 'Scratch to reveal our wedding date',
 };
 
-/* Hosting families — drives the "voice" of each side's invitation ----------- */
-export const families = {
-  bride: {
-    ganesha: ['वक्रतुण्ड महाकाय सूर्यकोटि समप्रभ ।', 'निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा ॥'],
-    hosts: 'Mrs. Usha & Late Mr. Prem Malhotra',
-    inviteLine: 'joyfully invite you to celebrate the wedding of',
-    parents: {
-      groom: 'S/o Mrs. Neeru & Mr. Jatinder Bahl',
-      bride: 'D/o Mrs. Ashu & Mr. Manish Malhotra',
-    },
-    sign: 'With love, the Malhotra Family',                         // ⟵ EDIT
-    // Overrides config.rsvpWhatsApp for side=bride links. ⟵ EDIT
-    rsvpWhatsApp: '919815551592',
-    contacts: [
-      { name: 'Manish Malhotra', phone: '+919876500001' },          // ⟵ EDIT
-      { name: 'Ashu Malhotra', phone: '+919876500002' },          // ⟵ EDIT
-    ],
+/* The hosting family — this site speaks in ONE family's voice. --------------
+   `side` decides whose child is named first and how the couple is ordered:
+   'bride' → bride first, 'groom' → groom first. For the other family's site,
+   start a second repo from this base and set side: 'groom'. */
+export const host = {
+  side: 'bride',                                                   // ⟵ EDIT 'bride' | 'groom'
+  // Optional invocation lines at the top (Sanskrit/Hindi). Remove for none.
+  ganesha: ['वक्रतुण्ड महाकाय सूर्यकोटि समप्रभ ।', 'निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा ॥'],
+  // Optional single invocation line in any script, e.g. 'ੴ ਸਤਿ ਨਾਮੁ'.
+  // invocation: '',
+  hosts: 'Mrs. Usha & Late Mr. Prem Malhotra',                     // ⟵ EDIT
+  inviteLine: 'joyfully invite you to celebrate the wedding of',   // ⟵ EDIT
+  parents: {
+    bride: 'D/o Mrs. Ashu & Mr. Manish Malhotra',                  // ⟵ EDIT
+    groom: 'S/o Mrs. Neeru & Mr. Jatinder Bahl',                   // ⟵ EDIT
   },
-  groom: {
-    invocation: 'श्री गुरु महाराज जी सदा सहायक',
-    hosts: 'Smt. Kamal & Sh. Parveen Kumar Bahl',
-    inviteLine: 'joyfully invite you to celebrate the wedding of their grandson',
-    parents: {
-      groom: 'S/o Smt. Neeru & Sh. Jatinder Bahl',
-      bride: 'D/o Smt. Ashu & Sh. Manish Malhotra',
-    },
-    sign: 'With love, the Bahl Family',                           // ⟵ EDIT
-    contacts: [
-      { name: 'Jatinder Bahl', phone: '+919876500003' },           // ⟵ EDIT
-      { name: 'Neeru Bahl', phone: '+919876500004' },           // ⟵ EDIT
-    ],
-  },
-  joint: {
-    ganesha: ['॥ श्री गणेशाय नमः ॥'],
-    hosts: 'The Bahl & Malhotra Families',                        // ⟵ EDIT
-    inviteLine: 'joyfully invite you to celebrate the wedding of',
-    parents: {
-      groom: 'S/o Smt. Neeru & Sh. Jatinder Bahl',
-      bride: 'D/o Smt. Ashu & Sh. Manish Malhotra',
-    },
-    sign: 'With love, the Bahl & Malhotra Families',
-    contacts: [
-      { name: 'Manish Malhotra', phone: '+919876500001' },
-      { name: 'Jatinder Bahl', phone: '+919876500003' },
-    ],
-  },
+  sign: 'With love, the Malhotra Family',                          // ⟵ EDIT
+  // RSVPs go to this WhatsApp number (digits + country code, no + or spaces).
+  rsvpWhatsApp: '919815551592',                                    // ⟵ EDIT
+  contacts: [
+    { name: 'Manish Malhotra', phone: '+919876500001' },           // ⟵ EDIT
+    { name: 'Ashu Malhotra', phone: '+919876500002' },             // ⟵ EDIT
+  ],
 };
 
 /* Venues --------------------------------------------------------------------- */
@@ -74,11 +51,6 @@ const brideHome = {
   name: '3010, Tribune Colony',
   area: 'Sector 29, Chandigarh',
   mapUrl: 'https://maps.app.goo.gl/SQxN8fmCPD2m1V5u6',
-};
-const groomHome = {
-  name: 'Guru Kirpa Niwas',
-  area: '32, Gillco Valley Rd, Sector 127, Kharar',
-  mapUrl: 'https://maps.app.goo.gl/VVrJ7hTVdEWrSkzs9',
 };
 const hotelRadius = {
   name: 'Hotel Radius',
@@ -92,13 +64,13 @@ const dullatResort = {
 };
 
 /* ----------------------------------------------------------------------------
- *  THE FUNCTIONS.  side: 'bride' | 'groom' | 'together'.
+ *  THE FUNCTIONS this family invites guests to (its own and the shared ones).
  *  `icon` is a key in components/Icons.jsx.  `dressCode.color` is the dot.
  *  `order` controls chronological sort.
  * -------------------------------------------------------------------------- */
 export const events = [
   {
-    id: 'kirtan', order: 1, side: 'bride',
+    id: 'kirtan', order: 1,
     name: 'Sai Sandhya', nameDeva: 'साईं संध्या',
     dateISO: '2026-11-14', dateLabel: '14 Nov', dayLabel: 'Saturday',
     timeLabel: 'Evening', icon: 'kirtan',
@@ -108,17 +80,7 @@ export const events = [
     video: '/videos/Sai Sandhya (Sukriti).mp4',
   },
   {
-    id: 'mehndi-groom', order: 2, side: 'groom',
-    name: 'Mehndi', nameDeva: 'मेहंदी',
-    dateISO: '2026-11-21', dateLabel: '21 Nov', dayLabel: 'Saturday',
-    timeLabel: 'Morning', icon: 'mehndi',
-    blurb: 'Henna, music and laughter as the groom’s side gathers.',
-    dressCode: { label: 'Fresh greens', color: '#7faa6a' },
-    venue: groomHome,
-    video: '/videos/Mehndi (Hemant).mp4',
-  },
-  {
-    id: 'mehndi-bride', order: 3, side: 'bride',
+    id: 'mehndi-bride', order: 3,
     name: 'Mehndi', nameDeva: 'मेहंदी',
     dateISO: '2026-11-21', dateLabel: '21 Nov', dayLabel: 'Saturday',
     timeLabel: 'Afternoon – Evening', icon: 'mehndi',
@@ -128,17 +90,7 @@ export const events = [
     video: '/videos/Mehndi (Sukriti).mp4',
   },
   {
-    id: 'sundarkand', order: 4, side: 'groom',
-    name: 'Sundarkand Path', nameDeva: 'सुंदरकांड पाठ',
-    dateISO: '2026-11-22', dateLabel: '22 Nov', dayLabel: 'Sunday',
-    timeLabel: 'Morning', icon: 'path',
-    blurb: 'A morning recitation seeking blessings for the union.',
-    dressCode: { label: 'Saffron & white', color: '#e08a3c' },
-    venue: groomHome,
-    video: '/videos/Sundarkand Path (Hemant).mp4',
-  },
-  {
-    id: 'shagun-sangeet', order: 5, side: 'together',
+    id: 'shagun-sangeet', order: 5,
     name: 'Shagun & Sangeet', nameDeva: 'शगुन व संगीत',
     dateISO: '2026-11-22', dateLabel: '22 Nov', dayLabel: 'Sunday',
     timeLabel: 'Evening', icon: 'sangeet',
@@ -148,7 +100,7 @@ export const events = [
     video: '/videos/HS Shagun.mp4',
   },
   {
-    id: 'haldi', order: 6, side: 'together',
+    id: 'haldi', order: 6,
     name: 'Haldi', nameDeva: 'उत्सव',
     dateISO: '2026-11-23', dateLabel: '23 Nov', dayLabel: 'Monday',
     timeLabel: '9 a.m. onwards', icon: 'haldi',
@@ -158,7 +110,7 @@ export const events = [
     video: '/videos/HS Haldi.mp4',
   },
   {
-    id: 'chooda', order: 7, side: 'bride',
+    id: 'chooda', order: 7,
     name: 'Chooda Rasam', nameDeva: 'चूड़ा रसम',
     dateISO: '2026-11-24', dateLabel: '24 Nov', dayLabel: 'Tuesday',
     timeLabel: 'Morning', icon: 'chooda',
@@ -167,44 +119,23 @@ export const events = [
     venue: hotelRadius,
   },
   {
-    id: 'sehrabandi-baarat', order: 8, side: 'groom',
-    name: 'Sehrabandi & Baarat', nameDeva: 'सेहराबंदी व बारात',
-    dateISO: '2026-11-24', dateLabel: '24 Nov', dayLabel: 'Tuesday',
-    timeLabel: 'Evening', icon: 'baarat',
-    blurb: 'The groom is adorned and sets off in a joyous procession.',
-    dressCode: { label: 'Cream & gold', color: '#d4af37' },
-    venue: groomHome,
-  },
-  {
-    id: 'wedding', order: 9, side: 'together',
+    id: 'wedding', order: 9,
     name: 'The Wedding', nameDeva: 'विवाह',
     dateISO: '2026-11-24', dateLabel: '24 Nov', dayLabel: 'Tuesday',
     timeLabel: 'Night', icon: 'wedding',
     blurb: 'The sacred pheras — where two souls become one.',
     dressCode: { label: 'Festive best', color: '#8a1f2b' },
     venue: dullatResort,
-    // Per-side films: the guest's `side` picks which one plays (joint → groom).
-    videoBySide: {
-      groom: '/videos/Wedding (Hemant).mp4',
-      bride: '/videos/Wedding (Sukriti).mp4',
-    },
+    video: '/videos/Wedding (Sukriti).mp4',
   },
 ];
 
-/* Quick presets for the host control panel ---------------------------------- */
+/* Quick presets for the host control panel — named guest groups. --------- */
 const byIds = (...ids) => ids;
 export const presets = {
-  all: { label: 'All functions', ids: events.map((e) => e.id) },
-  wedding: { label: 'Wedding only', ids: byIds('wedding') },
-  'shagun-wedding': { label: 'Shagun + Wedding', ids: byIds('shagun-sangeet', 'wedding') },
-  bride: {
-    label: 'Bride-side',
-    ids: events.filter((e) => e.side === 'bride' || e.side === 'together').map((e) => e.id),
-  },
-  groom: {
-    label: 'Groom-side',
-    ids: events.filter((e) => e.side === 'groom' || e.side === 'together').map((e) => e.id),
-  },
+  all: { label: 'All functions', ids: events.map((e) => e.id) },       // keep: the default
+  wedding: { label: 'Wedding only', ids: byIds('wedding') },              // ⟵ EDIT
+  'shagun-wedding': { label: 'Shagun + Wedding', ids: byIds('shagun-sangeet', 'wedding') }, // ⟵ EDIT
 };
 
 /* Toggleable scenes (Envelope / Hero / Footer are always shown) ------------- */

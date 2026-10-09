@@ -1,6 +1,9 @@
-# New couple runbook
+# New family site runbook (single-family base)
 
-How to turn this base into one couple's invitation, start to finish. Written so
+How to turn **invite-base-single** into one family's invitation, start to
+finish. Use this base when the bride's and groom's families each want their
+own site: build it twice, once per family, as two repos. (For one shared site
+with bride/groom/joint links, use `invite-base` and its guide instead.) Written so
 that a fresh Claude Code session (or Sandeep) can follow it without any other
 context. Read `CLAUDE.md` first for the architecture; this file is the
 procedure.
@@ -16,7 +19,13 @@ procedure.
 ## 1. Create the couple's repo
 
 Naming: repo `hswedding/invite-<slug>`, Worker `invite-<slug>`, where `<slug>`
-is lowercase letters, digits and hyphens (for example `aarav-diya`).
+is the couple plus the side, lowercase letters, digits and hyphens: for
+example `aarav-diya-bride` and `aarav-diya-groom`.
+
+When both families want sites, build the first one fully, then start the
+second repo the same way and copy over the shared parts of `src/data.js`
+(`couple`, `wedding`, shared venues and functions, `site` wording), changing
+`host` and the family-only functions.
 
 ### A. With the GitHub CLI logged in
 
@@ -32,7 +41,7 @@ The couple repo must carry the base's **full history**, otherwise
 
 ```bash
 # Claude cloud sessions clone shallow: deepen first, or the push is rejected.
-git clone https://github.com/hswedding/invite-base invite-<slug>
+git clone https://github.com/hswedding/invite-base-single invite-<slug>
 cd invite-<slug>
 git fetch --depth=1000 origin main      # no-op on a full clone
 git remote rename origin upstream
@@ -46,7 +55,7 @@ must match the Cloudflare dashboard):
 - `package.json` → `"name": "invite-<slug>"`
 
 ```bash
-git commit -am "Start invite-<slug> from invite-base"
+git commit -am "Start invite-<slug> from invite-base-single"
 git push -u origin main
 ```
 
@@ -69,8 +78,8 @@ couple completely: search for every `⟵ EDIT` marker and for the old names.
 | `monogram` | `'A&D'` | Not displayed today |
 | `hashtag` | `'#AaravWedsDiya'` | Footer. `''` leaves that line empty |
 
-Name order follows the side: bride links show the bride first, groom and joint
-links show the groom first (`orderedCouple` in `lib/config.js`).
+Name order follows `host.side`: a bride-side site shows the bride first, a
+groom-side site the groom first (`orderedCouple` in `lib/config.js`).
 
 ### `wedding`
 
@@ -81,20 +90,18 @@ links show the groom first (`orderedCouple` in `lib/config.js`).
 | `dayLabel` | `'Sunday'` | Check it matches the date |
 | `scratchPrompt` | `'Scratch to reveal our wedding date'` | Text on the scratch card |
 
-### `families` — one block per hosting side: `bride`, `groom`, `joint`
-
-The `side` in a guest's link picks the block, so each side's guests read their
-own family's voice.
+### `host` — the one family this site speaks for
 
 | Field | Example | Notes |
 | --- | --- | --- |
+| `side` | `'bride'` | `'bride'` or `'groom'`. Whose child is named first, with their parents' line |
 | `ganesha` | `['॥ श्री गणेशाय नमः ॥']` | Optional array of invocation lines (Sanskrit/Hindi). Omit for none |
 | `invocation` | `'ੴ ਸਤਿ ਨਾਮੁ'` | Optional single line (any script). Omit for none |
 | `hosts` | `'Mrs. & Mr. Rajesh Mehta'` | Who is inviting. Shown in capitals |
-| `inviteLine` | `'joyfully invite you to celebrate the wedding of'` | Sentence after the hosts |
-| `parents.groom`, `parents.bride` | `'S/o Mrs. Neha & Mr. Rajesh Mehta'` | Line under each name. Omit a key to hide it |
+| `inviteLine` | `'joyfully invite you to celebrate the wedding of their daughter'` | Sentence after the hosts |
+| `parents.bride`, `parents.groom` | `'D/o Mrs. Neha & Mr. Rajesh Mehta'` | Line under each name. Omit a key to hide it |
 | `sign` | `'With love, the Mehta Family'` | Footer sign-off |
-| `rsvpWhatsApp` | `'919800000000'` | Optional. RSVPs from this side's links go here; otherwise `config.rsvpWhatsApp` |
+| `rsvpWhatsApp` | `'919800000000'` | RSVPs go here (falls back to `config.rsvpWhatsApp`) |
 | `contacts` | `[{ name: 'Rajesh Mehta', phone: '+919800000000' }]` | Footer tap-to-call list. Phones with `+` and country code |
 
 The Ganesha image above the invocation is controlled separately by
@@ -120,7 +127,7 @@ latest function, usually the wedding).
 
 ```js
 {
-  id: 'haldi', order: 3, side: 'together',
+  id: 'haldi', order: 3,
   name: 'Haldi', nameDeva: 'हल्दी',
   dateISO: '2027-02-13', dateLabel: '13 Feb', dayLabel: 'Saturday',
   timeLabel: '10 a.m. onwards', icon: 'haldi',
@@ -135,11 +142,10 @@ latest function, usually the wedding).
 | --- | --- |
 | `id` | Lowercase kebab-case, unique. It is the vocabulary of guest links (`fns=`) and presets. **Never rename or remove an id after links have been sent**: those guests silently lose that function |
 | `order` | Chronological sort. Guest links always show functions in this order |
-| `side` | `'bride'`, `'groom'` or `'together'`. Drives the bride/groom presets and each side's default functions |
 | `name` | Title on the film card and in the venue list |
 | `dateLabel`, `dayLabel` | Shown above the film (`13 Feb · Saturday`) |
 | `video` | One film in `public/videos/` (URL-encode spaces as they appear in the path, e.g. `/videos/HS Haldi.mp4` works as written) |
-| `videoBySide` | Instead of `video`: `{ bride: '…', groom: '…' }`. Bride/groom links get their side's film; joint links show both, groom first |
+| `videoBySide` | Not needed here; use `video`. (Still supported: it plays the film for `host.side`) |
 | `nameDeva`, `dateISO`, `timeLabel`, `icon`, `blurb` | **Not rendered by the current UI.** Keep them filled (they document the function and a custom section may use them). `icon` must be a key in `components/Icons.jsx`: `kirtan mehndi path sangeet haldi chooda baarat wedding heart lotus sparkle` |
 | `dressCode.color` | Only shown as the colour dot in the `?host` panel. The label isn't rendered |
 
@@ -151,11 +157,9 @@ film shown properly, build a small card section in `src/custom/` that renders
 
 ### `presets`
 
-Named function sets for the `?host` panel and `preset=` links. The defaults
-(`all`, `bride`, `groom`, plus a couple of examples) derive from `events`;
-replace `wedding` / `shagun-wedding` with sets that make sense for this couple
-(their ids must exist). `bride` and `groom` are also each side's default
-functions, so keep those two.
+Named guest groups for the `?host` panel and `preset=` links, e.g.
+`{ label: 'Office friends', ids: ['sangeet', 'wedding'] }` (ids must exist).
+Keep `all`: it is the full invitation. A bare link shows every function.
 
 ### `toggleableSections`
 
@@ -166,7 +170,7 @@ can be hidden per link.
 
 | Field | Notes |
 | --- | --- |
-| `rsvpWhatsApp` | Default RSVP number (digits with country code, no `+` or spaces). Used for joint links and any side without its own |
+| `rsvpWhatsApp` | Fallback RSVP number (digits with country code, no `+` or spaces) when `host.rsvpWhatsApp` is empty |
 | `yaySfx` | Optional RSVP success sound at `public/assets/yay.mp3`; missing file is fine |
 | `bgMusic` | Looping music path in `public/`. Encode spaces as `%20` here |
 | `siteUrl` | Leave `''` (auto-detected). Set it only if a custom domain should be used in share links built on another domain |
@@ -244,10 +248,10 @@ npm run dev                        # http://localhost:5173
 
 Open and check each of:
 
-- `/` (joint), `/?side=bride`, `/?side=groom`: hosts, invocation, name order, parents lines, films per side
-- `/?host`: the panel lists every function; presets select the right ones; a generated `/<slug>` link opens the same view
-- RSVP opens WhatsApp to the right number for each side
-- Footer contacts, hashtag and sign-off per side
+- `/`: hosts, invocation, name order (the host's child first), parents lines, every film
+- `/?host`: the panel lists every function (no side switch); presets select the right ones; a generated `/<slug>` link opens the same view
+- RSVP opens WhatsApp to `host.rsvpWhatsApp`
+- Footer contacts, hashtag and sign-off
 - Countdown targets the right date
 
 Then the production build on Cloudflare's runtime:
@@ -277,13 +281,9 @@ title, text and image.
 
 ---
 
-## 7. Hand over to the families
+## 7. Hand over to the family
 
-Send each side its host link:
-
-- Bride side: `https://<site>/?side=bride&host`
-- Groom side: `https://<site>/?side=groom&host`
-- Joint: `https://<site>/?host`
+Send the family its builder link: `https://<site>/?host`.
 
 In the panel they pick a guest's functions (or a preset), optionally type the
 guest's name, and copy the link or tap "Share on WhatsApp". Remind them the

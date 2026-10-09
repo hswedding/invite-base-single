@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Start a new couple's invitation repo from invite-base.
+# Start one family's invitation repo from invite-base-single.
 #
-#   ./scripts/new-couple.sh <couple-slug> [github-owner]
-#   e.g. ./scripts/new-couple.sh aarav-diya
+#   ./scripts/new-couple.sh <couple-slug>-<bride|groom> [github-owner]
+#   e.g. ./scripts/new-couple.sh aarav-diya-bride   (and aarav-diya-groom for the other family)
 #
-# Creates ../invite-<slug> as a full clone of invite-base (history kept, so
+# Creates ../invite-<slug> as a full clone of invite-base-single (history kept, so
 # `git merge upstream/main` can pull base fixes later), renames the Worker,
 # commits, and — if the GitHub CLI is logged in — creates the private repo
 # hswedding/invite-<slug> and pushes it.
@@ -12,7 +12,7 @@ set -euo pipefail
 
 SLUG="${1:-}"
 OWNER="${2:-hswedding}"
-BASE_URL="${INVITE_BASE_URL:-https://github.com/hswedding/invite-base}"
+BASE_URL="${INVITE_BASE_URL:-https://github.com/hswedding/invite-base-single}"
 
 if [[ ! "$SLUG" =~ ^[a-z0-9][a-z0-9-]*$ ]]; then
   echo "Usage: $0 <couple-slug> [github-owner]   (lowercase letters, digits, hyphens)" >&2
@@ -27,7 +27,7 @@ if [[ -e "$DEST" ]]; then
   exit 1
 fi
 
-echo "→ Cloning invite-base into $DEST"
+echo "→ Cloning invite-base-single into $DEST"
 git clone --quiet "$BASE_URL" "$DEST"
 cd "$DEST"
 git remote rename origin upstream
@@ -38,7 +38,7 @@ sed -i.bak -E "s/\"name\": \"[^\"]+\"/\"name\": \"$NAME\"/" wrangler.jsonc && rm
 node -e "const f='package.json',p=require('./'+f);p.name='$NAME';require('fs').writeFileSync(f,JSON.stringify(p,null,2)+'\n')"
 
 git add wrangler.jsonc package.json
-git commit --quiet -m "Start $NAME from invite-base"
+git commit --quiet -m "Start $NAME from invite-base-single"
 
 if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
   echo "→ Creating private repo $OWNER/$NAME and pushing"

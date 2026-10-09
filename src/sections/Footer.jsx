@@ -1,11 +1,11 @@
-import { couple, families, studio } from '../data.js';
+import { couple, host, studio } from '../data.js';
 import { orderedCouple } from '../lib/config.js';
 import Icon from '../components/Icons.jsx';
 import palace from '../Images/decor/palace.png';
 
 /* Footer — gratitude, family contacts, and hashtag. */
 export default function Footer({ invite }) {
-  const family = families[invite.side] || families.joint;
+  const family = host;
   const names = orderedCouple(invite.side).map((c) => c.first).join(' & ');
   const studioWhatsApp = `https://wa.me/${studio.whatsapp}?text=${encodeURIComponent(studio.enquiry)}`;
 

@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { gsap, useGSAP } from '../lib/gsap.js';
-import { wedding, families, config } from '../data.js';
+import { wedding, host, config } from '../data.js';
 import { orderedCouple } from '../lib/config.js';
 import ScratchCard from '../components/ScratchCard.jsx';
 import Icon from '../components/Icons.jsx';
@@ -13,7 +13,7 @@ import ganesha from '../Images/ganesha.png';
    the couple's names, and a scratch card hiding the wedding date. */
 export default function Hero({ invite }) {
   const root = useRef(null);
-  const family = families[invite.side] || families.joint;
+  const family = host;
   const [first, second] = orderedCouple(invite.side);
 
   useGSAP(() => {

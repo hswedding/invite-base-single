@@ -1,9 +1,9 @@
 {
-  "name": "invite-base",
+  "name": "invite-base-single",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Base for per-couple digital wedding invitations (React + Vite, hosted on Cloudflare Workers static assets)",
+  "description": "Base for single-family digital wedding invitations (one site per family; React + Vite on Cloudflare Workers)",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

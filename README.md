@@ -1,12 +1,20 @@
-# invite-base — digital wedding invitation base
+# invite-base-single — one-family wedding invitation base
 
-The base every couple's invitation starts from. A single-page, mobile-first
+The base for families who want **their own site**: the bride's family and the
+groom's family each get a separate invitation, one repo each, both started
+from this base. (For one shared site with bride/groom/joint links, use
+[`invite-base`](https://github.com/hswedding/invite-base) instead.)
+
+Each site speaks in one family's voice: `host.side` in `src/data.js`
+(`'bride'` or `'groom'`) puts that family's child first, and the invitation
+builder has no bride/groom/joint switch. A single-page, mobile-first
 digital wedding invitation (React 19 + Vite, GSAP + Lenis, no backend),
 hosted free on **Cloudflare Workers static assets**. One site serves **every
 guest variant**: which functions each guest sees lives in the link.
 
-It currently carries the Hemant & Sukriti invitation as its working example,
-identical to the live site.
+It currently carries the bride side of the Hemant & Sukriti invitation
+(Malhotra family) as its working example, identical to that wedding's
+`?side=bride` page.
 
 ## Run it
 
@@ -22,11 +30,13 @@ npm run deploy     # build + deploy with Wrangler (needs `npx wrangler login` on
 
 Full procedure: **[docs/NEW-COUPLE-GUIDE.md](docs/NEW-COUPLE-GUIDE.md)**. The message to send a couple for their details, with where each answer goes: **[docs/CLIENT-INTAKE.md](docs/CLIENT-INTAKE.md)**.
 
-Each couple gets their **own repo**, a full clone of this one, so their site
-can be customised freely while still being able to pull fixes from the base.
+Each family gets its **own repo**, a full clone of this one, so its site can
+be customised freely while still being able to pull fixes from the base.
+Name them after the couple plus the side:
 
 ```bash
-./scripts/new-couple.sh aarav-diya      # → ../invite-aarav-diya, repo hswedding/invite-aarav-diya
+./scripts/new-couple.sh aarav-diya-bride   # → hswedding/invite-aarav-diya-bride, host.side: 'bride'
+./scripts/new-couple.sh aarav-diya-groom   # → hswedding/invite-aarav-diya-groom, host.side: 'groom'
 ```
 
 The script clones the base (history kept), renames the remote to `upstream`,
@@ -42,7 +52,7 @@ you meant to diverge:
 
 | What | Where |
 | --- | --- |
-| Names, families, events, venues, phones, RSVP numbers | `src/data.js` |
+| Names, hosting family (`host`, incl. `host.side`), events, venues, phones, RSVP number | `src/data.js` |
 | Page title, description, WhatsApp preview, `noindex`, analytics token | `site` in `src/data.js` |
 | Envelope film path, Ganesha image on/off, music | `config` in `src/data.js` |
 | Palette, fonts, spacing | `src/styles/tokens.css`, `src/styles/fonts.css` |
@@ -90,17 +100,16 @@ token from the snippet into `site.cloudflareAnalyticsToken` in `src/data.js`.
 
 ## Sending different guests different functions
 
-Open the **host control panel** at `https://your-site/?host` (bride- and
-groom-side shortcuts: `/?side=bride&host`, `/?side=groom&host`). Pick the
-guest's functions (checkboxes or a quick preset), the hosting side, optional
-sections and an optional guest name. The page previews live, and you get a
+Open the **host control panel** at `https://your-site/?host`. Pick the
+guest's functions (checkboxes or a quick preset), optional sections and an
+optional guest name. The page previews live, and you get a
 **shareable link** + a **Share on WhatsApp** button.
 
 The shareable link is an opaque token — `https://your-site/c2lkZT1icmlkZQ` —
 which is just the query string below, base64url-encoded into the path (no
 backend or storage; the link *is* the config). Append `?host` to any such link
 to reopen the builder on that variant. Unrecognisable tokens fall back to the
-full joint invitation.
+full invitation (every function).
 
 > The `?host` panel is hidden, not secured — anyone with the URL (or who edits
 > the query string) can change the view. That's fine for a wedding invite; don't
@@ -110,11 +119,11 @@ full joint invitation.
 
 | Param | Meaning | Example |
 |---|---|---|
-| `side` | hosting voice + default functions | `?side=bride` |
 | `preset` | a named set | `?preset=shagun-wedding` |
 | `fns` | exact functions (ids from `data.js`) | `?fns=haldi,wedding` |
 | `to` | personalised greeting | `?to=Sharma%20Family` |
 | `countdown` `venue` `rsvp` | set to `0` to hide | `?rsvp=0` |
 
-A bare URL with no params = the full joint invitation, everything on.
-Presets: `all`, `wedding`, `shagun-wedding`, `bride`, `groom`.
+A bare URL with no params = every function, everything on. A `side` param
+from an old link is ignored. Presets are the named guest groups in
+`presets` (`all` plus the family's own).

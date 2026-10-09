@@ -6,14 +6,9 @@ import {
 import { applyQuery } from '../hooks/useConfig.js';
 import Icon from '../components/Icons.jsx';
 
-const SIDES = [
-  { id: 'joint', label: 'Joint' },
-  { id: 'bride', label: 'Bride' },
-  { id: 'groom', label: 'Groom' },
-];
-
-/* Host control panel (opens at ?host). Pick a guest's functions, sections and
-   side; it live-updates the page behind and builds a shareable link. Client-side
+/* Host control panel (opens at ?host). Pick a guest's functions and sections
+   (the hosting side is fixed for this single-family site); it live-updates
+   the page behind and builds a shareable link. Client-side
    only — obscure, not secured. */
 export default function ControlPanel() {
   const init = useMemo(
@@ -44,14 +39,9 @@ export default function ControlPanel() {
   const names = orderedCouple(state.side).map((c) => c.first).join(' & ');
   const waHref = buildWhatsAppShare(shareUrl, state.guestName, names);
 
-  const setSide = (side) => setState((s) => ({ ...s, side }));
   const applyPreset = (key) => {
     const p = presets[key];
-    setState((s) => ({
-      ...s,
-      eventIds: [...p.ids],
-      side: key === 'bride' ? 'bride' : key === 'groom' ? 'groom' : s.side,
-    }));
+    setState((s) => ({ ...s, eventIds: [...p.ids] }));
   };
   const toggleEvent = (id) =>
     setState((s) => ({
@@ -100,19 +90,6 @@ export default function ControlPanel() {
           />
         </label>
 
-        {/* Side */}
-        <div className="panel__group">
-          <span className="panel__group-label">Hosting side</span>
-          <div className="panel__seg">
-            {SIDES.map((s) => (
-              <button key={s.id} type="button"
-                className={state.side === s.id ? 'is-on' : ''}
-                aria-pressed={state.side === s.id}
-                onClick={() => setSide(s.id)}>{s.label}</button>
-            ))}
-          </div>
-        </div>
-
         {/* Presets */}
         <div className="panel__group">
           <span className="panel__group-label">Quick presets</span>
@@ -137,7 +114,7 @@ export default function ControlPanel() {
                     onChange={() => toggleEvent(e.id)} />
                   <span className="panel__check-dot" style={{ background: e.dressCode.color }} />
                   <span className="panel__check-name">{e.name}</span>
-                  <small>{e.dateLabel} · {e.side}</small>
+                  <small>{e.dateLabel}</small>
                 </label>
               </li>
             ))}
