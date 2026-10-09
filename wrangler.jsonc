@@ -1,0 +1,15 @@
+// Cloudflare Workers config — an assets-only Worker (no server code).
+// Every couple's repo has its own copy: change `name` per couple. The name
+// becomes the site URL: https://<name>.<your-subdomain>.workers.dev
+// and must match the Worker name in the Cloudflare dashboard.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "invite-base",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    // Vite's build output.
+    "directory": "./dist",
+    // Unknown paths (the opaque /<slug> guest links) fall back to index.html.
+    "not_found_handling": "single-page-application"
+  }
+}

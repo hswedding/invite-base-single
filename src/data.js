@@ -227,6 +227,31 @@ export const config = {
   // Default site URL used by the control panel to build share links.
   // Leave '' to auto-detect from the browser. ⟵ EDIT once deployed.
   siteUrl: '',
+  // The opening envelope film (public/). ⟵ EDIT per couple
+  envelopeVideo: '/videos/envelop.mp4',
+  // Show the Ganesha image at the top of the hero. Set false for couples
+  // who want a different (or no) invocation image. ⟵ EDIT
+  showGanesha: true,
+};
+
+/* Page meta — written into index.html at build time (see vite.config.js).
+   This is what WhatsApp shows in the link preview. ⟵ EDIT per couple */
+export const site = {
+  title: 'Hemant & Sukriti · Wedding Invitation',
+  description:
+    'With the blessings of our families, we joyfully invite you to celebrate the wedding of Hemant & Sukriti — 24 November 2026.',
+  shareTitle: "Hemant & Sukriti · You're Invited",
+  shareDescription:
+    'Join us as we celebrate our wedding — 24 November 2026. Tap to open your invitation.',
+  // 1200×630 image in public/ for the WhatsApp / social preview.
+  shareImage: '/og-image.jpg',
+  // Browser UI colour on mobile — match the page background.
+  themeColor: '#fdf9ef',
+  // Keep invitations (home addresses, phone numbers) out of search engines.
+  noindex: true,
+  // Optional Cloudflare Web Analytics token (dashboard → Web Analytics →
+  // add a site → copy the token from the JS snippet). '' = no analytics.
+  cloudflareAnalyticsToken: '',
 };
 
 /* Studio credit — the "Made with ♥ by … | Create Yours →" line in the footer.

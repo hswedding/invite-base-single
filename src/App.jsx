@@ -17,6 +17,7 @@ import Footer from './sections/Footer.jsx';
 import ControlPanel from './sections/ControlPanel.jsx';
 import Petals from './components/Petals.jsx';
 import Icon from './components/Icons.jsx';
+import customSections from './custom/index.js';
 
 export default function App() {
   const invite = useConfig();
@@ -72,6 +73,9 @@ export default function App() {
         <EventFilms events={events} side={invite.side} soundOn={soundOn} />
         {invite.sections.venue && <Venue events={events} />}
         {invite.sections.rsvp && <Rsvp invite={invite} />}
+        {customSections.map(({ id, Component }) => (
+          <Component key={id} invite={invite} />
+        ))}
         <Footer invite={invite} />
       </main>
 

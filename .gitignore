@@ -49,3 +49,7 @@ coverage
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# Cloudflare / Wrangler
+.wrangler
+.dev.vars*

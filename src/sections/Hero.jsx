@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { gsap, useGSAP } from '../lib/gsap.js';
-import { wedding, families } from '../data.js';
+import { wedding, families, config } from '../data.js';
 import { orderedCouple } from '../lib/config.js';
 import ScratchCard from '../components/ScratchCard.jsx';
 import Icon from '../components/Icons.jsx';
@@ -35,7 +35,9 @@ export default function Hero({ invite }) {
       <img className="decor decor--hero-br" src={floralRight} alt="" aria-hidden="true" />
       <img className="decor decor--hero-wash" src={wash} alt="" aria-hidden="true" />
       <div className="section__inner hero__inner">
-        <img className="hero__ganesha hero__reveal" src={ganesha} alt="Lord Ganesha" />
+        {config.showGanesha && (
+          <img className="hero__ganesha hero__reveal" src={ganesha} alt="Lord Ganesha" />
+        )}
         {family.ganesha && (
           <p className="hero__invocation hero__reveal" lang="sa">
             {family.ganesha.map((line, i) => (

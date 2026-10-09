@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from '../lib/gsap.js';
 import { useReducedMotion } from '../hooks/useReducedMotion.js';
 import Icon from '../components/Icons.jsx';
+import { config } from '../data.js';
 
 /* How long we let the film buffer (after tap, or mid-play stall) before
    giving up and revealing the page — guests on slow mobile data must never
@@ -70,7 +71,7 @@ export default function Envelope({ onOpen }) {
       <video
         ref={videoRef}
         className="envelope__film"
-        src="/videos/envelop.mp4"
+        src={config.envelopeVideo}
         playsInline
         preload="auto"
         onPlaying={() => { setBuffering(false); clearWatchdog(); }}
