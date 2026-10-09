@@ -13,7 +13,7 @@ import sizes from './media-sizes.json';
 const RANGE_RE = /^bytes=(\d*)-(\d*)$/;
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const range = request.headers.get('Range');
 
     // Pass the request through as-is; if the asset server ever starts
@@ -57,9 +57,15 @@ export default {
     headers.set('Content-Length', String(end - start + 1));
     headers.set('Accept-Ranges', 'bytes');
 
-    const body = request.method === 'HEAD' ? null : sliceStream(res.body, start, end);
-    if (!body) res.body?.cancel();
-    return new Response(body, { status: 206, headers });
+    if (request.method === 'HEAD') {
+      res.body?.cancel();
+      return new Response(null, { status: 206, headers });
+    }
+    // FixedLengthStream makes Cloudflare send a real Content-Length (Safari
+    // is strict about it on 206) instead of chunked encoding.
+    const { readable, writable } = new FixedLengthStream(end - start + 1);
+    ctx.waitUntil(sliceStream(res.body, start, end).pipeTo(writable).catch(() => {}));
+    return new Response(readable, { status: 206, headers });
   },
 };
 
