@@ -1,5 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { readdirSync, statSync, writeFileSync } from 'node:fs'
+import { join, relative, sep } from 'node:path'
 import { site } from './src/data.js'
 
 // Single-page wedding invitation. No router, no SSR — mirrors the Invifest reference.
@@ -38,8 +40,34 @@ function siteMeta() {
   }
 }
 
+/** After each build, records the size of every film/music file in dist/ into
+ *  worker/media-sizes.json. The media Worker (worker/index.js) needs the size
+ *  to answer Range requests, which Safari/iPhone requires to play video. */
+function mediaSizes() {
+  return {
+    name: 'media-sizes',
+    apply: 'build',
+    closeBundle() {
+      const root = 'dist'
+      const sizes = {}
+      const walk = (dir) => {
+        for (const name of readdirSync(dir)) {
+          const full = join(dir, name)
+          const st = statSync(full)
+          if (st.isDirectory()) walk(full)
+          else if (/\.(mp4|webm|mov|m4v|mp3|m4a|ogg|wav)$/i.test(name)) {
+            sizes['/' + relative(root, full).split(sep).join('/')] = st.size
+          }
+        }
+      }
+      walk(root)
+      writeFileSync('worker/media-sizes.json', JSON.stringify(sizes, null, 2) + '\n')
+    },
+  }
+}
+
 export default defineConfig({
-  plugins: [react(), siteMeta()],
+  plugins: [react(), siteMeta(), mediaSizes()],
   server: {
     host: true,
     port: 5173,

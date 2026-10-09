@@ -1,4 +1,4 @@
-// Cloudflare Workers config — an assets-only Worker (no server code).
+// Cloudflare Workers config — static assets plus a tiny media Worker.
 // Every couple's repo has its own copy: change `name` per couple. The name
 // becomes the site URL: https://<name>.<your-subdomain>.workers.dev
 // and must match the Worker name in the Cloudflare dashboard.
@@ -6,10 +6,15 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "invite-base",
   "compatibility_date": "2026-09-01",
+  // Adds Range (206) support for films and music so Safari/iPhone can play them.
+  "main": "worker/index.js",
   "assets": {
     // Vite's build output.
     "directory": "./dist",
+    "binding": "ASSETS",
     // Unknown paths (the opaque /<slug> guest links) fall back to index.html.
-    "not_found_handling": "single-page-application"
+    "not_found_handling": "single-page-application",
+    // Only media goes through the Worker; everything else is served directly.
+    "run_worker_first": ["/videos/*", "/*.mp4", "/*.mp3"]
   }
 }

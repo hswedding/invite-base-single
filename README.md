@@ -59,9 +59,17 @@ git merge upstream/main
 
 ## Hosting on Cloudflare (free)
 
-`wrangler.jsonc` makes this an assets-only Worker: Cloudflare serves `dist/`
-and sends unknown paths (the opaque `/<slug>` guest links) to `index.html`.
-Requests to static assets are free and unlimited.
+`wrangler.jsonc` serves `dist/` as static assets and sends unknown paths (the
+opaque `/<slug>` guest links) to `index.html`. Requests to static assets are
+free and unlimited.
+
+Films and music (`/videos/*`, `*.mp4`, `*.mp3`) go through a tiny Worker,
+`worker/index.js`, that answers HTTP Range requests with `206 Partial
+Content`. Cloudflare's asset server returns whole files to Range requests,
+and Safari on iPhone/Mac won't play video served that way. The Worker needs
+each file's size, which the build writes to `worker/media-sizes.json`
+(generated, git-ignored), so always deploy via `npm run build` first. These
+media requests count towards the free plan's 100,000 Worker requests a day.
 
 One-time per repo, in the Cloudflare dashboard:
 
