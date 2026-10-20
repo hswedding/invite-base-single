@@ -19,11 +19,7 @@ export default function ControlPanel() {
     side: init.side,
     guestName: init.guestName,
     eventIds: init.eventIds,
-    sections: {
-      countdown: init.sections.countdown,
-      venue: init.sections.venue,
-      rsvp: init.sections.rsvp,
-    },
+    sections: { ...init.sections },
   });
   const [copied, setCopied] = useState(false);
 

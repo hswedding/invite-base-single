@@ -119,6 +119,8 @@ const paths = {
     </>
   ),
   arrowDown: <path {...S} d="M12 5v14M6 13l6 6 6-6" />,
+  pause: <path {...S} d="M9 6v12M15 6v12" />,
+  play: <path {...S} d="M8 5.5v13l10.5-6.5L8 5.5Z" />,
 };
 
 export default function Icon({ name, size = 24, className, title }) {

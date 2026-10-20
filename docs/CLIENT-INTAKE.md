@@ -11,7 +11,7 @@ the bottom, then follow `docs/NEW-COUPLE-GUIDE.md`.
 ```text
 Hi! 😊 Congratulations once again! I'd love to make your family's digital wedding invitation.
 
-It's a small website your guests open on their phone: an opening envelope, the couple's names, a short film for each function, venue maps, a countdown, and RSVP straight to WhatsApp. You can choose which functions each guest sees and personalise it with their name. It stays off Google, so only people with the link can open it.
+It's a small website your guests open on their phone: an opening envelope, the couple's names, a short film for each function, venue maps, a countdown, a reel of your photos, and RSVP straight to WhatsApp. You can choose which functions each guest sees and personalise it with their name. It stays off Google, so only people with the link can open it.
 
 To build it I need the details below. Send them whenever you can, in parts or as voice notes, whatever is easiest.
 
@@ -71,7 +71,8 @@ Once I have these I'll send you a preview link to check before anything goes out
 | RSVP WhatsApp | `host.rsvpWhatsApp` | Digits only, with country code |
 | Functions | `events[]` + a venue `const` per venue | `id` kebab-case; film path in `video` |
 | Dress code | `events[].dressCode` | Mainly goes into the film; only the colour dot shows in `?host` |
-| Photos, videos, song | Sandeep's films → `public/videos/`; song → music `.mp3` in `public/` + `config.bgMusic` | H.264 MP4 ≤ 25 MiB |
+| Photos | `public/photos/` (run `scripts/compress-photos.ps1` first) + `photos` in `src/data.js` | 4–8 photos for the photo reel; also material for the films |
+| Videos, song | Sandeep's films → `public/videos/`; song → music `.mp3` in `public/` + `config.bgMusic` | H.264 MP4 ≤ 25 MiB |
 | Printed card / colours | `src/styles/tokens.css` palette, fonts in `index.html` | |
 | Hindi / Punjabi lines | `host.ganesha` / `host.invocation`, or custom copy | |
 | Guest groups | `presets` | Keep `all` |

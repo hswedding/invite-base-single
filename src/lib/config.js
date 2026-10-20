@@ -9,7 +9,7 @@
  *    fns       csv of event ids             (which functions to show)
  *    preset    a key of `presets` in data.js
  *    to        guest name (personalised greeting)
- *    countdown/venue/rsvp = 0               (hide that section)
+ *    countdown/photos/venue/rsvp = 0        (hide that section)
  *    host                                   (presence opens control panel)
  *
  *  A bare URL with no params = every function, everything on.
@@ -21,7 +21,7 @@
 import { couple, events, presets, host } from '../data.js';
 
 const EVENT_IDS = events.map((e) => e.id);
-export const SECTION_IDS = ['countdown', 'venue', 'rsvp'];
+export const SECTION_IDS = ['countdown', 'photos', 'venue', 'rsvp'];
 
 /** Keep only known ids, preserve canonical chronological order. */
 function sanitiseIds(ids) {
@@ -69,11 +69,7 @@ export function parseInvitation(search = '', pathname = '') {
   }
   const eventIds = sanitiseIds(ids);
 
-  const sections = {
-    countdown: p.get('countdown') !== '0',
-    venue: p.get('venue') !== '0',
-    rsvp: p.get('rsvp') !== '0',
-  };
+  const sections = Object.fromEntries(SECTION_IDS.map((id) => [id, p.get(id) !== '0']));
 
   return {
     side,

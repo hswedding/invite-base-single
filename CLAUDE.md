@@ -30,7 +30,7 @@ A single-page, mobile-first digital wedding invitation. React 19 + Vite, GSAP + 
 
 **URL is the state.** `src/lib/config.js` is the core: `parseInvitation(search)` turns the query string into an `invite` config object; `buildQuery`/`buildShareUrl` do the reverse for the host panel. There is no store or context — `src/hooks/useConfig.js` reads the URL into React state and re-parses on `popstate` and a custom `urlchange` event. The host control panel live-previews by calling `applyQuery()` (which does `history.replaceState` + dispatches `urlchange`) — so URL edits reflow the whole page without reload.
 
-Query params (see the header comment in `src/lib/config.js` and README for the full table): `fns` (csv of event ids), `preset`, `to` (guest name), `countdown|venue|rsvp=0` (hide section), and bare `host` (presence opens the control panel). A param-less URL = every function, everything on. The hosting side is fixed by `host.side`; `invite.side` still exists (always `host.side`) so sections and `orderedCouple()` stay the same as in invite-base.
+Query params (see the header comment in `src/lib/config.js` and README for the full table): `fns` (csv of event ids), `preset`, `to` (guest name), `countdown|photos|venue|rsvp=0` (hide section), and bare `host` (presence opens the control panel). A param-less URL = every function, everything on. The hosting side is fixed by `host.side`; `invite.side` still exists (always `host.side`) so sections and `orderedCouple()` stay the same as in invite-base.
 
 **Content vs. code separation is deliberate.** All copy, names, the hosting family (`host`), dates, venues, phone numbers, events, presets, global config and page meta (`site`: title, description, WhatsApp/OG preview, `noindex`) live in `src/data.js` — placeholders are marked `⟵ EDIT`. Section/animation components read from it and should not hardcode content. Event `id`s in `data.js` are the vocabulary for the `fns` param and presets; renaming or removing one silently invalidates existing shared links. `sanitiseIds` drops unknown ids and re-sorts to canonical chronological order (`event.order`), so unknown/stale ids fail closed rather than erroring.
 
@@ -38,7 +38,7 @@ Query params (see the header comment in `src/lib/config.js` and README for the f
 
 **Shared GSAP instance.** Always import gsap/ScrollTrigger/useGSAP from `src/lib/gsap.js` (plugins are registered there once) — never import from `gsap` directly in components.
 
-**Directory map:** `src/sections/` = full-width page scenes (Hero, Countdown, EventFilms, Venue, Rsvp, Footer, Envelope, ControlPanel). `src/components/` = reusable pieces (Petals, ScratchCard, Icons). `src/styles/` = plain CSS; `base.css` `@import`s `tokens.css` (design tokens/CSS variables) and `fonts.css`, and `main.jsx` also imports `components.css`. Icons are keyed by string in `Icons.jsx` and referenced by name from event data.
+**Directory map:** `src/sections/` = full-width page scenes (Hero, Countdown, Photos, EventFilms, Venue, Rsvp, Footer, Envelope, ControlPanel). `src/components/` = reusable pieces (Petals, ScratchCard, Icons). `src/styles/` = plain CSS; `base.css` `@import`s `tokens.css` (design tokens/CSS variables) and `fonts.css`, and `main.jsx` also imports `components.css`. Icons are keyed by string in `Icons.jsx` and referenced by name from event data.
 
 ## External integrations (no backend)
 
