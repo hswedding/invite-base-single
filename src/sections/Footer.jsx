@@ -7,7 +7,6 @@ import palace from '../Images/decor/palace.png';
 export default function Footer({ invite }) {
   const family = host;
   const names = orderedCouple(invite.side).map((c) => c.first).join(' & ');
-  const studioWhatsApp = `https://wa.me/${studio.whatsapp}?text=${encodeURIComponent(studio.enquiry)}`;
 
   return (
     <footer className="footer section" id="footer-section">
@@ -35,7 +34,7 @@ export default function Footer({ invite }) {
           <span className="footer__credit-sep" aria-hidden="true">|</span>
           <a
             className="footer__credit-cta"
-            href={studioWhatsApp}
+            href={studio.url}
             target="_blank"
             rel="noopener noreferrer"
           >

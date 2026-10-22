@@ -212,8 +212,9 @@ Restart `npm run dev` after editing `site`; it's read once at startup.
 
 ### `studio`
 
-Sandeep's footer credit ("Made with ♥ by … | Create Yours →"). Leave unless
-told otherwise.
+Sandeep's footer credit ("Made with ♥ by … | Create Yours →"). "Create
+Yours" opens `studio.url`, the HS Wedding Invites website. Leave unless told
+otherwise.
 
 ---
 
