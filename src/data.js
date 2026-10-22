@@ -186,12 +186,10 @@ export const site = {
 };
 
 /* Studio credit — the "Made with ♥ by … | Create Yours →" line in the footer.
-   The CTA opens a WhatsApp chat with the studio so enquiries arrive instantly. */
+   The CTA opens the HS Wedding Invites website, where guests can enquire. */
 export const studio = {
   name: 'HS Wedding Invites',
   cta: 'Create Yours →',
-  // Studio WhatsApp number (digits + country code, no + or spaces). ⟵ EDIT
-  whatsapp: '917717372446',
-  // Pre-filled first message the enquirer sends. ⟵ EDIT
-  enquiry: "Hi HS Wedding Invites! I saw one of your digital wedding invitations and I'd love one for my wedding.",
+  // Where "Create Yours" goes.
+  url: 'https://hs-wedding-invites.hs-invites.workers.dev/',
 };
