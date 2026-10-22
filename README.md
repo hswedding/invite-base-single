@@ -57,6 +57,7 @@ you meant to diverge:
 | Envelope film path, Ganesha image on/off, music | `config` in `src/data.js` |
 | Palette, fonts, spacing | `src/styles/tokens.css`, `src/styles/fonts.css` |
 | Films, music, preview image (`og-image.jpg`, 1200×630) | `public/` (max 25 MiB per file on Cloudflare) |
+| Couple photos (the swipeable reel after the countdown) | `public/photos/` (shrink with `scripts/compress-photos.ps1`) + `photos` in `src/data.js` |
 | Decor art | `src/Images/` (swap files, keep names) |
 | One-off sections or animations | `src/custom/`, listed in `src/custom/index.js` |
 
@@ -122,7 +123,7 @@ full invitation (every function).
 | `preset` | a named set | `?preset=shagun-wedding` |
 | `fns` | exact functions (ids from `data.js`) | `?fns=haldi,wedding` |
 | `to` | personalised greeting | `?to=Sharma%20Family` |
-| `countdown` `venue` `rsvp` | set to `0` to hide | `?rsvp=0` |
+| `countdown` `photos` `venue` `rsvp` | set to `0` to hide | `?photos=0` |
 
 A bare URL with no params = every function, everything on. A `side` param
 from an old link is ignored. Presets are the named guest groups in

@@ -188,6 +188,48 @@
 }
 .countdown__sub { font-family: var(--font-body); font-style: italic; color: var(--text-mid); margin-top: var(--sp-4); }
 
+/* ---- Couple photos (endless drifting reel of prints) ---------------------- */
+.photos { text-align: center; --card-w: min(250px, 62vw); }
+/* full-bleed: pull back over the section's side gutter */
+.photos__viewport {
+  margin: var(--sp-5) calc(-1 * var(--sp-4)) 0;
+  touch-action: pan-y; cursor: grab;
+  user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+}
+.photos__viewport:active { cursor: grabbing; }
+.photos__viewport:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+/* prints dissolve into the paper at both edges */
+.photos__reel {
+  overflow: hidden; padding: var(--sp-5) 0 var(--sp-7);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+}
+.photos__track {
+  display: flex; gap: var(--sp-5); width: max-content;
+  list-style: none; margin: 0; padding: 0 var(--sp-5);
+  touch-action: pan-y; will-change: transform;
+}
+/* a loose stack of prints: white border, tiny radius, alternating tilt */
+.photos__card {
+  flex: 0 0 var(--card-w); aspect-ratio: 2 / 3;
+  border: 7px solid var(--white); border-radius: 3px; background: var(--cream-3);
+  box-shadow: 0 1px 2px #7a541014, var(--shadow-md);
+  transform: rotate(-2.2deg);
+}
+.photos__card--tilt { transform: rotate(1.8deg) translateY(var(--sp-4)); }
+.photos__card img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  pointer-events: none; -webkit-user-drag: none;
+}
+.photos__toggle {
+  width: 44px; height: 44px; border-radius: 50%; margin: 0 auto;
+  display: grid; place-items: center; color: var(--gold-deep); cursor: pointer;
+  background: var(--white); border: 1px solid var(--gold-border); box-shadow: var(--shadow-sm);
+  transition: transform 0.18s var(--ease-soft);
+}
+.photos__toggle:active { transform: scale(0.94); }
+.photos__toggle:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
 /* ---- Invitation films (Haldi · Mehndi) ------------------------------------ */
 .film { text-align: center; overflow: hidden; }
 .film__deva {

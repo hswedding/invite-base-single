@@ -138,9 +138,22 @@ export const presets = {
   'shagun-wedding': { label: 'Shagun + Wedding', ids: byIds('shagun-sangeet', 'wedding') }, // ⟵ EDIT
 };
 
+/* Couple photos — the swipeable strip after the countdown (hide with photos=0).
+   Files live in public/photos; shrink new ones first with
+   scripts/compress-photos.ps1. Order here = order in the strip. Cards are
+   portrait, so landscape shots get their sides cropped — `focus` (CSS
+   object-position x %) picks which part stays in frame. ⟵ EDIT */
+export const photos = [
+  { src: '/photos/1.jpg', alt: 'The couple on a white Royal Enfield' },
+  { src: '/photos/3.jpg', alt: 'The couple arm in arm on an evening out', focus: '40%' },
+  { src: '/photos/4.jpg', alt: 'The couple reading a book together in a pine forest', focus: '46%' },
+  { src: '/photos/2.jpg', alt: 'The couple running hand in hand through tall grass' },
+];
+
 /* Toggleable scenes (Envelope / Hero / Footer are always shown) ------------- */
 export const toggleableSections = [
   { id: 'countdown', label: 'Countdown' },
+  { id: 'photos', label: 'Photos' },
   { id: 'venue', label: 'Venue & Travel' },
   { id: 'rsvp', label: 'RSVP' },
 ];

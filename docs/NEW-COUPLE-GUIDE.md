@@ -161,10 +161,29 @@ Named guest groups for the `?host` panel and `preset=` links, e.g.
 `{ label: 'Office friends', ids: ['sangeet', 'wedding'] }` (ids must exist).
 Keep `all`: it is the full invitation. A bare link shows every function.
 
+### `photos`
+
+The couple's photos, shown as an endless, slowly drifting reel of tilted prints
+right after the countdown (guests can drag or swipe it; it pauses on hover,
+focus or its pause button).
+
+1. Shrink the originals (Windows, PowerShell):
+   `powershell -ExecutionPolicy Bypass -File scripts/compress-photos.ps1 <folder>`
+   — writes 1200px-wide JPEGs to `public/photos/`, keeping file names and
+   fixing phone rotation. Aim for 4–8 photos.
+2. List them in `photos` in the order they should appear:
+   `{ src: '/photos/1.jpg', alt: 'The couple at the beach' }`. Write a real
+   `alt` for each.
+3. Cards are portrait (2:3). For landscape shots add `focus: '40%'` (CSS
+   `object-position` x) to choose which part stays in frame.
+
+No photos? Set `photos = []` and the section disappears. A single link can
+hide it with `photos=0` (the builder has a Photos toggle).
+
 ### `toggleableSections`
 
-Leave as is unless a section is removed. Only `countdown`, `venue` and `rsvp`
-can be hidden per link.
+Leave as is unless a section is removed. Only `countdown`, `photos`, `venue`
+and `rsvp` can be hidden per link.
 
 ### `config`
 
